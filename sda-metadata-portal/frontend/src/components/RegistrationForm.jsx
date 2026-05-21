@@ -25,8 +25,8 @@ export default function RegistrationForm({ onRegistered = () => {} }) {
   const [sectors, setSectors] = useState([])
   const [form, setForm] = useState(INITIAL_FORM)
   const [submitting, setSubmitting] = useState(false)
-  const [message, setMessage] = useState('')
   const [error, setError] = useState('')
+  const [popup, setPopup] = useState(null)
 
   useEffect(() => {
     async function loadSectors() {
@@ -83,7 +83,7 @@ export default function RegistrationForm({ onRegistered = () => {} }) {
 
   async function handleSubmit(event) {
     event.preventDefault()
-    setMessage('')
+    setPopup(null)
     setError('')
 
     const validationError = validate()
@@ -110,8 +110,9 @@ export default function RegistrationForm({ onRegistered = () => {} }) {
       const data = await res.json()
       if (!res.ok) throw new Error(data.error || 'Could not register dataset')
 
-      setMessage(`Dataset registered successfully. New ID: ${data.id}`)
-      setForm(INITIAL_FORM)
+      setPopup({
+        text: `Dataset registered successfully. New ID: ${data.id}`,
+      })
       if (typeof onRegistered === 'function') {
         onRegistered()
       }
@@ -124,10 +125,35 @@ export default function RegistrationForm({ onRegistered = () => {} }) {
 
   return (
     <section>
+      {popup && (
+        <div className="toast-wrap" role="status" aria-live="polite">
+          <div className="toast success" role="alert">
+            <div className="toast-head">
+              <h3>Registration Successful</h3>
+            </div>
+            <p>{popup.text}</p>
+            <div className="toast-actions">
+              <button
+                type="button"
+                className="toast-primary"
+                onClick={() => {
+                  setForm(INITIAL_FORM)
+                  setPopup(null)
+                }}
+              >
+                Start Another Submission
+              </button>
+              <button type="button" className="secondary" onClick={() => setPopup(null)}>
+                Close
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
       <form className="panel form" onSubmit={handleSubmit}>
         <h2>Register a New Dataset</h2>
 
-        {message && <p className="msg success">{message}</p>}
         {error && <p className="msg error">{error}</p>}
 
         <label htmlFor="title">Title</label>
