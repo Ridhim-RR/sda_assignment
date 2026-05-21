@@ -21,8 +21,7 @@ This prototype includes two core interfaces:
 - Dataset cards showing title, department, sector, format badges, last updated, classification badge, and status
 - Dataset detail view (`/datasets/:id`) showing full metadata
 - Registration form (`/datasets/new`) with required-field validation
-- Backend REST API with required endpoints and CORS enabled
-- New dataset ID generation using existing code patterns (`UP-{CODE}-{###}`)
+
 
 ## Run Locally (Fresh Clone)
 
